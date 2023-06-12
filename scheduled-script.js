@@ -2,7 +2,7 @@ const date = new Date;
 
 const minutes = date.getMinutes();
 
-if(minutes === 0) {
+if(minutes < 30) {
 	process.exit(0)
 } else {
 	process.exit(1)

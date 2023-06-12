@@ -1,0 +1,15 @@
+name: Scheduled Actions Demo
+run-name: ${{ github.actor }} is testing scheduled GitHub Actions 🚀
+on:
+  schedule:
+    - cron: '0 14-23 * * 1-5'
+    - cron: '30 14-23 * * 1-5'
+jobs:
+  Scheduled-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - run: node scheduled-script.js
+      - run: echo "🍏 This job's status is ${{ job.status }}."

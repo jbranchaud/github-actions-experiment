@@ -3,7 +3,7 @@ const date = new Date;
 const minutes = date.getMinutes();
 
 if(minutes < 30) {
-	process.exit(0)
+  console.log("Everything looks good here!")
 } else {
-	process.exit(1)
+  throw new Error("This script fails when it runs after the half-hour.")
 }

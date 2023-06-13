@@ -1,4 +1,4 @@
-name: Playwright Demo
+name: Playwright Total TypeScript
 run-name: ${{ github.actor }} is testing Playwright GitHub Actions 🚀
 on:
   workflow_dispatch:

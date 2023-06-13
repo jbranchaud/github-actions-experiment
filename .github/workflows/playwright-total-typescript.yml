@@ -2,6 +2,7 @@ name: Playwright Demo
 run-name: ${{ github.actor }} is testing Playwright GitHub Actions 🚀
 on:
   workflow_dispatch:
+  workflow_call:
 jobs:
   Scheduled-GitHub-Actions:
     runs-on: ubuntu-latest

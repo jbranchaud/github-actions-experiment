@@ -9,6 +9,11 @@ jobs:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: 'Total TypeScript Healthcheck'
-        uses: './github/workflows/playwright-total-typescript.yml'
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Install playwright deps
+        run: npx playwright install --with-deps chromium
+      - run: node playwright-demo.js
       - run: echo "🍏 This job's status is ${{ job.status }}."

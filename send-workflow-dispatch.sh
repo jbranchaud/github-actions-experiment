@@ -10,6 +10,6 @@ curl -L \
   -H "Authorization: Bearer $GITHUB_ACCESS_TOKEN"\
   -H "X-GitHub-Api-Version: 2022-11-28" \
   https://api.github.com/repos/jbranchaud/github-actions-experiment/actions/workflows/playwright.yml/dispatches \
-  -d '{inputs":{"name":"Mona the Octocat","home":"San Francisco, CA"}}'
+  -d '{"ref":"main"}'
 
 echo 'end of workflow_dispatch script'

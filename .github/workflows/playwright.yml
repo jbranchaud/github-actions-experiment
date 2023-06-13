@@ -12,4 +12,4 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
   Playwright-Total-TypeScript:
     runs-on: ubuntu-latest
-    uses: './github/workflows/playwright-total-typescript.yml'
+    uses: './.github/workflows/playwright-total-typescript.yml'

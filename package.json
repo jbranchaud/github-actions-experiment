@@ -1,0 +1,23 @@
+{
+  "name": "github-actions-experiment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbranchaud/github-actions-experiment.git"
+  },
+  "author": "jbranchaud",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jbranchaud/github-actions-experiment/issues"
+  },
+  "homepage": "https://github.com/jbranchaud/github-actions-experiment#readme",
+  "dependencies": {
+    "playwright-core": "^1.35.0"
+  }
+}

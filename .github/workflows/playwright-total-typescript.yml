@@ -20,5 +20,5 @@ jobs:
         run: npm ci
       - name: Install playwright deps
         run: npx playwright install --with-deps chromium
-      - run: node playwright-demo.js
+      - run: node playwright-total-typescript.js
       - run: echo "🍏 This job's status is ${{ job.status }}."

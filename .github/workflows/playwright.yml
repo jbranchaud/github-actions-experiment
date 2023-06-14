@@ -12,3 +12,5 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
   Playwright-Total-TypeScript:
     uses: './.github/workflows/playwright-total-typescript.yml'
+  Playwright-ProTailwind:
+    uses: './.github/workflows/playwright-protailwind.yml'

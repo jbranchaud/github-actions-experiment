@@ -1,5 +1,5 @@
-name: Playwright Total TypeScript
-run-name: ${{ github.actor }} is testing Playwright Total TypeScript 🚀
+name: Playwright ProTailwind
+run-name: ${{ github.actor }} is testing Playwright ProTailwind 🚀
 on:
   workflow_dispatch:
   workflow_call:
@@ -20,5 +20,5 @@ jobs:
         run: npm ci
       - name: Install playwright deps
         run: npx playwright install --with-deps chromium
-      - run: node playwright-demo.js
+      - run: node playwright-protailwind.js
       - run: echo "🍏 This job's status is ${{ job.status }}."

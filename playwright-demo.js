@@ -1,28 +1,9 @@
 // import { test, expect } from '@playwright/test'
-// import { chromium } from 'playwright-core'
-// import { launchChromium } from 'playwright-aws-lambda'
 import { chromium as playwrightChromium } from 'playwright-core';
-// import awsChromium from 'chrome-aws-lambda';
 
-// TODO: Set up this script based on: https://github.com/jbranchaud/next-inngest-playwright-experiment/commit/14904ab74927da4fdaa0d549559cb30a0b9aa24e#diff-e7c5e76b64aac5e30dc43577cb62687c8f4375626758c3b883ec744d59c8d8f5
 const chromium = (() => {
   const launch = async () => {
     return playwrightChromium.launch({headless: true})
-
-    // const options = process.env.AWS_REGION
-    // ? {
-    //     headless: true,
-    //     executablePath: await awsChromium.executablePath
-    //   }
-    // : {
-    //     headless: true,
-    //     executablePath:
-    //         process.platform === 'linux'
-    //         ? '/usr/bin/google-chrome'
-    //         : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-    //   };
-    // // return launchChromium({ headless: true })
-    // return playwrightChromium.launch(options)
   }
 
   return { launch }

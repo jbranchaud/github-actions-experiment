@@ -1,4 +1,5 @@
 import { chromium as playwrightChromium } from 'playwright-core';
+import {retry} from './src/retry.mjs'
 
 const chromium = (() => {
   const launch = async () => {
@@ -101,17 +102,23 @@ export const testProTailwind = async ({ event, step }) => {
       throw new Error("Main heading not visible on Multi-Style Tailwind Components page");
     }
 
-    const {validPricing, text} = await retriable(3, async () => {
-      // Sometimes the pricing takes a moment to load
-      await page.waitForTimeout(500)
+    // Sometimes the pricing takes a moment to load
+    await page.waitForTimeout(500)
 
+    const customSleep = async (retryIntervalMs) => { await page.waitForTimeout(retryIntervalMs) }
+    const options = { retries: 3, retryIntervalMs: 500, customSleep }
+    const {validPricing, text} = await retry(async () => {
       // Find the div with the 'data-price' attribute within the main div
       const pricingDiv = await page.$('div#main-pricing div[data-price]');
       const text = (pricingDiv && await pricingDiv.textContent()) || '';
       const validPricing = isValidMonetaryValue(text)
 
-      return validPricing && { validPricing, text }
-    })
+      if(validPricing) {
+        return { validPricing, text }
+      } else {
+        throw new Error(`A valid price isn't currently displaying after ${options.retries} retries, text: ${text}`)
+      }
+    }, options)
 
     // Check if the price is displaying as a valid number
     if (validPricing) {
@@ -154,18 +161,26 @@ export const testProTailwind = async ({ event, step }) => {
       .isVisible()
 
     if(!headingVisible) {
+      await page.screenshot({ path: 'screenshot.png', fullPage: true });
       throw new Error("Heading not visible on first exercise of Intro to Background Split Tutorial");
     }
 
     await page.waitForTimeout(500)
 
-    const videoVisible = await page.locator('video').isVisible()
+    const customSleep = async (retryIntervalMs) => { await page.waitForTimeout(retryIntervalMs) }
+    const options = { retries: 3, retryIntervalMs: 500, customSleep }
+    const {videoTagVisible} = await retry(async () => {
+      console.log("Checking for Video tag")
+      const videoVisible = await page.locator('video').isVisible()
 
-    if(videoVisible) {
-      return { event, body: { videoTagVisible: true } }
-    } else {
-      throw new Error("Video tag not visible on first exercise of Intro to Background Split Tutorial");
-    }
+      if(videoVisible) {
+        return { videoTagVisible: true }
+      } else {
+        throw new Error("Video tag not visible on first exercise of Intro to Background Split Tutorial");
+      }
+    }, options)
+
+    return { event, body: { videoTagVisible } }
   })
 }
 

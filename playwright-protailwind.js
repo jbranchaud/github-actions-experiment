@@ -15,6 +15,29 @@ function isValidMonetaryValue(value) {
   return re.test(value);
 }
 
+
+const retriable = async (maxRetries, fn) => {
+  if(maxRetries < 1 || maxRetries > 10) {
+    throw new Error(`retriable: maxRetries must be between 1 and 10, but it was ${maxRetries}`)
+  }
+
+  let retryCount = 0
+  let result = false
+  let errors = []
+
+  while(result === false && retryCount < maxRetries) {
+    try {
+      result = await fn()
+    } catch(e) {
+      errors.push({ runCount: retryCount, error: e })
+    }
+
+    retryCount += 1
+  }
+
+  return { ...result, errors }
+}
+
 export const testProTailwind = async ({ event, step }) => {
   await step.run('Test Core CTAs', async () => {
     const browser = await chromium.launch();
@@ -78,13 +101,17 @@ export const testProTailwind = async ({ event, step }) => {
       throw new Error("Main heading not visible on Multi-Style Tailwind Components page");
     }
 
-    // Sometimes the pricing takes a moment to load
-    await page.waitForTimeout(500)
+    const {validPricing, text} = await retriable(3, async () => {
+      // Sometimes the pricing takes a moment to load
+      await page.waitForTimeout(500)
 
-    // Find the div with the 'data-price' attribute within the main div
-    const pricingDiv = await page.$('div#main-pricing div[data-price]');
-    const text = (pricingDiv && await pricingDiv.textContent()) || '';
-    const validPricing = isValidMonetaryValue(text)
+      // Find the div with the 'data-price' attribute within the main div
+      const pricingDiv = await page.$('div#main-pricing div[data-price]');
+      const text = (pricingDiv && await pricingDiv.textContent()) || '';
+      const validPricing = isValidMonetaryValue(text)
+
+      return validPricing && { validPricing, text }
+    })
 
     // Check if the price is displaying as a valid number
     if (validPricing) {
@@ -97,20 +124,20 @@ export const testProTailwind = async ({ event, step }) => {
     return { event, body };
   })
 
-  await step.xrun('Test View First Video', async () => {
+  await step.run('Test View a Tutorial Video', async () => {
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
 
     await page.goto(baseUrl);
 
-    // Go to Pro Workshops
-    await page.getByText('Pro Workshops').first().click()
+    // Go to Tutorials
+    await page.getByRole('link').filter({ hasText: 'Tutorials' }).click()
 
-    // Go to Type Transformations module
+    // Go to Background Split Alignment
     await page
     .getByRole('link')
-    .filter({ hasText: 'Type Transformations' })
+    .filter({ hasText: 'Background Split Alignment' })
     .click();
 
     // Start Learning
@@ -123,11 +150,11 @@ export const testProTailwind = async ({ event, step }) => {
 
     const headingVisible =
       await page
-      .getByRole('heading', { name: "Type Transformations Workshop Welcome" })
+      .getByRole('heading', { name: "Introduction to the Background Split Tutorial" })
       .isVisible()
 
     if(!headingVisible) {
-      throw new Error("Heading not visible on first exercise of Type Transformations");
+      throw new Error("Heading not visible on first exercise of Intro to Background Split Tutorial");
     }
 
     await page.waitForTimeout(500)
@@ -137,7 +164,7 @@ export const testProTailwind = async ({ event, step }) => {
     if(videoVisible) {
       return { event, body: { videoTagVisible: true } }
     } else {
-      throw new Error("Video tag not visible on first exercise of Type Transformations");
+      throw new Error("Video tag not visible on first exercise of Intro to Background Split Tutorial");
     }
   })
 }

@@ -1,5 +1,5 @@
 import { chromium as playwrightChromium } from 'playwright-core';
-import {retry} from './src/retry.mjs'
+import {retry} from './src/retry.js'
 
 const chromium = (() => {
   const launch = async () => {

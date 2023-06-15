@@ -16,29 +16,6 @@ function isValidMonetaryValue(value) {
   return re.test(value);
 }
 
-
-const retriable = async (maxRetries, fn) => {
-  if(maxRetries < 1 || maxRetries > 10) {
-    throw new Error(`retriable: maxRetries must be between 1 and 10, but it was ${maxRetries}`)
-  }
-
-  let retryCount = 0
-  let result = false
-  let errors = []
-
-  while(result === false && retryCount < maxRetries) {
-    try {
-      result = await fn()
-    } catch(e) {
-      errors.push({ runCount: retryCount, error: e })
-    }
-
-    retryCount += 1
-  }
-
-  return { ...result, errors }
-}
-
 export const testProTailwind = async ({ event, step }) => {
   await step.run('Test Core CTAs', async () => {
     const browser = await chromium.launch();

@@ -1,5 +1,6 @@
 import { chromium as playwrightChromium } from 'playwright-core';
 import {retry} from './src/retry'
+import {runHealthChecks} from './src/runner'
 
 const chromium = (() => {
   const launch = async () => {
@@ -161,22 +162,4 @@ export const testProTailwind = async ({ event, step }: {event: any; step: any}) 
   })
 }
 
-(async () => {
-  const event = { time: new Date() }
-  const run = async (testDescription: string, testFunction: () => Promise<any>) => {
-    console.log(testDescription);
-    const result = await testFunction()
-    console.log(result)
-  }
-  const xrun = async (testDescription: string, _testFunction: () => Promise<any>) => {
-    console.log(`Skipping "${testDescription}"`)
-  }
-  const step = {
-    run,
-    xrun
-  }
-
-  await testProTailwind({ event, step })
-
-  process.exit(0);
-})()
+runHealthChecks(testProTailwind)

@@ -1,4 +1,5 @@
 import { chromium as playwrightChromium } from 'playwright-core';
+import {runHealthChecks} from './src/runner'
 
 const chromium = (() => {
   const launch = async () => {
@@ -85,22 +86,4 @@ export const testTotalTypeScript = async ({ event, step }: {event: any; step: an
   })
 }
 
-(async () => {
-  const event = { time: new Date() }
-  const run = async (testDescription: string, testFunction: () => Promise<any>) => {
-    console.log(testDescription);
-    const result = await testFunction()
-    console.log(result)
-  }
-  const xrun = async (testDescription: string, _testFunction: () => Promise<any>) => {
-    console.log(`Skipping "${testDescription}"`)
-  }
-  const step = {
-    run,
-    xrun
-  }
-
-  await testTotalTypeScript({ event, step })
-
-  process.exit(0);
-})()
+runHealthChecks(testTotalTypeScript)

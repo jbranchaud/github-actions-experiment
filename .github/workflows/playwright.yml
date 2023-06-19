@@ -14,3 +14,5 @@ jobs:
     uses: './.github/workflows/playwright-total-typescript.yml'
   Playwright-ProTailwind:
     uses: './.github/workflows/playwright-protailwind.yml'
+  Playwright-Egghead:
+    uses: './.github/workflows/playwright-egghead.yml'

@@ -23,5 +23,5 @@ jobs:
       - name: Install playwright deps
         run: npx playwright install --with-deps chromium
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-      - run: node playwright-total-typescript.js
+      - run: npm run healthcheck -- playwright-total-typescript.ts
       - run: echo "🍏 This job's status is ${{ job.status }}."

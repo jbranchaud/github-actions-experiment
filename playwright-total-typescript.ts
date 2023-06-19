@@ -1,4 +1,3 @@
-// import { test, expect } from '@playwright/test'
 import { chromium as playwrightChromium } from 'playwright-core';
 
 const chromium = (() => {
@@ -11,12 +10,12 @@ const chromium = (() => {
 
 const baseUrl = 'https://totaltypescript.com'
 
-function isValidMonetaryValue(value) {
+function isValidMonetaryValue(value: string) {
   const re = /^\$?\d+(\.\d{2})?$/;
   return re.test(value);
 }
 
-export const testTotalTypeScript = async ({ event, step }) => {
+export const testTotalTypeScript = async ({ event, step }: {event: any; step: any}) => {
   await step.run('Test Price Display', async () => {
 
     const browser = await chromium.launch();
@@ -88,13 +87,17 @@ export const testTotalTypeScript = async ({ event, step }) => {
 
 (async () => {
   const event = { time: new Date() }
-  const run = async (testDescription, testFunction) => {
+  const run = async (testDescription: string, testFunction: () => Promise<any>) => {
     console.log(testDescription);
     const result = await testFunction()
     console.log(result)
   }
+  const xrun = async (testDescription: string, _testFunction: () => Promise<any>) => {
+    console.log(`Skipping "${testDescription}"`)
+  }
   const step = {
-    run
+    run,
+    xrun
   }
 
   await testTotalTypeScript({ event, step })

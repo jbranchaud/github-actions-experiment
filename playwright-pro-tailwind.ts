@@ -1,5 +1,5 @@
 import { chromium as playwrightChromium } from 'playwright-core';
-import {retry} from './src/retry.js'
+import {retry} from './src/retry'
 
 const chromium = (() => {
   const launch = async () => {
@@ -11,18 +11,18 @@ const chromium = (() => {
 
 const baseUrl = 'https://protailwind.com'
 
-function isValidMonetaryValue(value) {
+function isValidMonetaryValue(value: string) {
   const re = /^\$?\d+(\.\d{2})?$/;
   return re.test(value);
 }
 
-export const testProTailwind = async ({ event, step }) => {
+export const testProTailwind = async ({ event, step }: {event: any; step: any}) => {
   await step.run('Test Core CTAs', async () => {
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    const body = {};
+    const body = {logInLinkVisible: false, signUpFormVisible: false};
 
     await page.goto(baseUrl);
 
@@ -60,7 +60,7 @@ export const testProTailwind = async ({ event, step }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
-    const body = {}
+    const body = { mainHeadingVisible: false, validPricingVisible: false }
 
     await page.goto(baseUrl);
 
@@ -82,7 +82,7 @@ export const testProTailwind = async ({ event, step }) => {
     // Sometimes the pricing takes a moment to load
     await page.waitForTimeout(500)
 
-    const customSleep = async (retryIntervalMs) => { await page.waitForTimeout(retryIntervalMs) }
+    const customSleep = async (retryIntervalMs: number) => { await page.waitForTimeout(retryIntervalMs) }
     const options = { retries: 3, retryIntervalMs: 500, customSleep }
     const {validPricing, text} = await retry(async () => {
       // Find the div with the 'data-price' attribute within the main div
@@ -144,7 +144,7 @@ export const testProTailwind = async ({ event, step }) => {
 
     await page.waitForTimeout(500)
 
-    const customSleep = async (retryIntervalMs) => { await page.waitForTimeout(retryIntervalMs) }
+    const customSleep = async (retryIntervalMs: number) => { await page.waitForTimeout(retryIntervalMs) }
     const options = { retries: 3, retryIntervalMs: 500, customSleep }
     const {videoTagVisible} = await retry(async () => {
       console.log("Checking for Video tag")
@@ -163,12 +163,12 @@ export const testProTailwind = async ({ event, step }) => {
 
 (async () => {
   const event = { time: new Date() }
-  const run = async (testDescription, testFunction) => {
+  const run = async (testDescription: string, testFunction: () => Promise<any>) => {
     console.log(testDescription);
     const result = await testFunction()
     console.log(result)
   }
-  const xrun = async (testDescription, _testFunction) => {
+  const xrun = async (testDescription: string, _testFunction: () => Promise<any>) => {
     console.log(`Skipping "${testDescription}"`)
   }
   const step = {

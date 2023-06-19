@@ -7,12 +7,18 @@
  *
  * From https://mtsknn.fi/blog/js-retry-on-fail/
  */
-const sleep = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms))
+const sleep = (ms = 0) => new Promise((resolve: any) => setTimeout(resolve, ms))
 
-export const retry = async (
-  fn,
-  options,
-) => {
+type Options = {
+  retries: number;
+  retryIntervalMs: number;
+  customSleep: (arg0: number) => Promise<void> | undefined;
+}
+
+export const retry = async <T>(
+  fn: () => Promise<T> | T,
+  options: Options
+): Promise<T> => {
   const { retries, retryIntervalMs, customSleep } = options
 
   try {

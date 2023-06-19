@@ -1,4 +1,5 @@
 import { chromium as playwrightChromium } from 'playwright-core';
+import {retry} from './src/retry'
 import {runHealthChecks} from './src/runner'
 
 const chromium = (() => {
@@ -46,6 +47,8 @@ export const testTotalTypeScript = async ({ event, step }: {event: any; step: an
     const context = await browser.newContext();
     const page = await context.newPage();
 
+    const body = {lessonHeadingVisible: false, videoTagVisible: false}
+
     await page.goto(baseUrl);
 
     // Go to Pro Workshops
@@ -65,24 +68,32 @@ export const testTotalTypeScript = async ({ event, step }: {event: any; step: an
 
     await page.waitForTimeout(500)
 
-    const headingVisible =
-      await page
-      .getByRole('heading', { name: "Type Transformations Workshop Welcome" })
-      .isVisible()
+    const customSleep = async (retryIntervalMs: number) => { await page.waitForTimeout(retryIntervalMs) }
+    const options = { retries: 3, retryIntervalMs: 500, customSleep }
+    await retry(async () => {
+      const headingVisible =
+        await page
+        .getByRole('heading', { name: "Type Transformations Workshop Welcome" })
+        .isVisible()
 
-    if(!headingVisible) {
-      throw new Error("Heading not visible on first exercise of Type Transformations");
-    }
+      if(headingVisible) {
+        body.lessonHeadingVisible = true
+      } else {
+        throw new Error(`Heading not visible on first exercise of Type Transformations after ${options.retries} retries`);
+      }
+    }, options)
 
     await page.waitForTimeout(500)
 
     const videoVisible = await page.locator('video').isVisible()
 
     if(videoVisible) {
-      return { event, body: { videoTagVisible: true } }
+      body.videoTagVisible = true
     } else {
       throw new Error("Video tag not visible on first exercise of Type Transformations");
     }
+
+    return { event, body }
   })
 }
 

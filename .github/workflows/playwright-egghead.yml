@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
 jobs:
-  Scheduled-GitHub-Actions:
+  egghead-io:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."

@@ -1,5 +1,5 @@
-import {retry} from './src/retry'
-import {runHealthChecks, Step} from './src/runner'
+import {retry} from '../retry'
+import {runHealthChecks, Step} from '../runner'
 
 const baseUrl = 'https://egghead.io'
 

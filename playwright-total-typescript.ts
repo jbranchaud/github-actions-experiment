@@ -1,14 +1,5 @@
-import { chromium as playwrightChromium } from 'playwright-core';
 import {retry} from './src/retry'
-import {runHealthChecks} from './src/runner'
-
-const chromium = (() => {
-  const launch = async () => {
-    return playwrightChromium.launch({headless: true})
-  }
-
-  return { launch }
-})()
+import {runHealthChecks, Step} from './src/runner'
 
 const baseUrl = 'https://totaltypescript.com'
 
@@ -17,8 +8,8 @@ function isValidMonetaryValue(value: string) {
   return re.test(value);
 }
 
-export const testTotalTypeScript = async ({ event, step }: {event: any; step: any}) => {
-  await step.run('Test Price Display', async () => {
+export const testTotalTypeScript = async ({ event, step }: {event: any; step: Step}) => {
+  await step.run('Test Price Display', async ({ chromium }) => {
 
     const browser = await chromium.launch();
     const context = await browser.newContext();
@@ -42,7 +33,7 @@ export const testTotalTypeScript = async ({ event, step }: {event: any; step: an
     }
   })
 
-  await step.run('Test View First Video', async () => {
+  await step.run('Test View First Video', async ({ chromium }) => {
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();

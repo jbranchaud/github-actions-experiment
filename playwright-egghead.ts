@@ -1,20 +1,10 @@
-import { chromium as playwrightChromium } from 'playwright-core';
 import {retry} from './src/retry'
-import {runHealthChecks} from './src/runner'
-
-const chromium = (() => {
-  const launch = async () => {
-    return playwrightChromium.launch({headless: true})
-  }
-
-  return { launch }
-})()
+import {runHealthChecks, Step} from './src/runner'
 
 const baseUrl = 'https://egghead.io'
 
-export const testEgghead = async ({ event, step }: {event: any; step: any}) => {
-  await step.run('Test Price Display', async () => {
-
+export const testEgghead = async ({ event, step }: {event: any; step: Step}) => {
+  await step.run('Test Price Display', async ({ chromium }) => {
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -50,7 +40,7 @@ export const testEgghead = async ({ event, step }: {event: any; step: any}) => {
     return { event, body };
   })
 
-  await step.run('Test View First Video', async () => {
+  await step.run('Test View First Video', async ({ chromium }) => {
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -107,13 +97,15 @@ export const testEgghead = async ({ event, step }: {event: any; step: any}) => {
       .filter({ hasText: "A Beginners Guide to React Introduction" })
       .isVisible()
 
-    const videoVisible = await page.locator('video').isVisible()
+    await retry(async () => {
+      const videoVisible = await page.locator('video').isVisible()
 
-    if(videoVisible) {
-      body.videoTagIsVisible = true
-    } else {
-      throw new Error("Video tag not visible on first exercise of Beginner's Guide to React");
-    }
+      if(videoVisible) {
+        body.videoTagIsVisible = true
+      } else {
+        throw new Error("Video tag not visible on first exercise of Beginner's Guide to React");
+      }
+    }, options)
 
     return { event, body }
   })
